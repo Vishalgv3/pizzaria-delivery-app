@@ -1,7 +1,10 @@
 // importing google font for NextJS
+import CustomerOrders from '@/components/CustomerOrders';
+import LoadingOverlay from '@/components/LoadingOverlay';
 import { getJSONData } from '@/tools/Toolkit';
-import { Orders } from '@/tools/orders.model';
+import { Order, Orders } from '@/tools/orders.model';
 import { Griffy } from 'next/font/google';
+import { useEffect, useState } from 'react';
 const griffy = Griffy({weight: "400", subsets: ['latin']});
 
 export default function Home() {
@@ -11,6 +14,7 @@ export default function Home() {
   // -------------------------- event handlers
   const onResponse = (data:Orders) => {
     console.log(data);
+    setRetrievedData(data.orders);
   };
 
   const onError = (message:string) => {
@@ -18,14 +22,26 @@ export default function Home() {
   };
 
   const getOrders = (e:any) => {
+    setShowLoadingOverlay(true);
     // fetch the data from the api
     getJSONData(RETRIEVE_SCRIPT, onResponse, onError);
   };
 
+  // --------------------------- state variables
+  const [showLoadingOverlay, setShowLoadingOverlay] = useState<boolean>(true);
+  const [retrievedData, setRetrievedData] = useState<Order[]>([]);
+
+  // --------------------------- use effect
+  useEffect(() => {
+    setShowLoadingOverlay(false);
+  }, [retrievedData])
+  
 
   // ---------------------------- rendering to DOM
   return (
     <main className="grid grid-rows-1 grid-cols-1 gap-0 text-content">
+
+    <LoadingOverlay enabled={showLoadingOverlay} bgColor="#b82308" showSpinner={true} spinnerColor="FFFFFF" />
 
       <div className="flex flex-nowrap items-center justify-center 
           bg-accent bg-[url('./../lib/images/background.jpg')] bg-no-repeat bg-center bg-cover
@@ -66,8 +82,16 @@ export default function Home() {
       <div className="bg-greyAccent p-10">
 
         <div id="output" className="divide-dashed divide-y-2 divide-accent">
-
-          <>No orders retrieved...</>
+          {retrievedData.map((data) => 
+          <CustomerOrders
+          id={data.id}
+          name={data.name}
+          address={data.address}
+          city={data.city}
+          size={data.size}
+          delivered={data.delivered}
+          toppings={data.toppings}
+          notes={data.notes} />)}
 
         </div>
       </div>
