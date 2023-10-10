@@ -1,4 +1,6 @@
 // importing google font for NextJS
+import { getJSONData } from '@/tools/Toolkit';
+import { Orders } from '@/tools/orders.model';
 import { Griffy } from 'next/font/google';
 const griffy = Griffy({weight: "400", subsets: ['latin']});
 
@@ -6,7 +8,19 @@ export default function Home() {
   // retrieve server sided script
   const RETRIEVE_SCRIPT:string = "https://www.seanmorrow.ca/_lessons/retrieveOrder.php";
 
-  
+  // -------------------------- event handlers
+  const onResponse = (data:Orders) => {
+    console.log(data);
+  };
+
+  const onError = (message:string) => {
+    console.log(`*** Error retrieving pizza order data:  ${message}`);
+  };
+
+  const getOrders = (e:any) => {
+    // fetch the data from the api
+    getJSONData(RETRIEVE_SCRIPT, onResponse, onError);
+  };
 
 
   // ---------------------------- rendering to DOM
@@ -37,7 +51,8 @@ export default function Home() {
           <div className="text-accent text-3xl font-bold mb-2.5">Welcome loyal pizza dispatcher....</div>Click the &quot;Get Orders&quot; button below to view all current orders that need to be delivered.
           <div>
               <button 
-                className="bg-accent border-none rounded-md p-2.5 text-white hover:bg-greyContent mt-5">Get Orders</button>
+                className="bg-accent border-none rounded-md p-2.5 text-white hover:bg-greyContent mt-5"
+                onClick={getOrders}>Get Orders</button>
           </div>
         </div>
         <div className="shrink-0 text-lg text-right text-greyContent hidden md:block">
