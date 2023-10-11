@@ -3,6 +3,7 @@ import CustomerOrders from '@/components/CustomerOrders';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import { getJSONData } from '@/tools/Toolkit';
 import { Order, Orders } from '@/tools/orders.model';
+import { data } from 'autoprefixer';
 import { Griffy } from 'next/font/google';
 import { useEffect, useState } from 'react';
 const griffy = Griffy({weight: "400", subsets: ['latin']});
@@ -81,19 +82,22 @@ export default function Home() {
 
       <div className="bg-greyAccent p-10">
 
-        <div id="output" className="divide-dashed divide-y-2 divide-accent">
-          {retrievedData.map((data) => 
-          <CustomerOrders
-          id={data.id}
-          name={data.name}
-          address={data.address}
-          city={data.city}
-          size={data.size}
-          delivered={data.delivered}
-          toppings={data.toppings}
-          notes={data.notes} />)}
+        {retrievedData.length == 0 ? <div className="text-center text-2xl text-accent">No orders to display</div> :
+          <div id="output" className="divide-dashed divide-y-2 divide-accent">
+            {retrievedData.map((data) => 
+            <CustomerOrders
+            id={data.id}
+            name={data.name}
+            address={data.address}
+            city={data.city}
+            size={data.size}
+            delivered={data.delivered}
+            toppings={data.toppings}
+            notes={data.notes} />)}
+          </div>
+        }
 
-        </div>
+
       </div>
     </main>
   );
