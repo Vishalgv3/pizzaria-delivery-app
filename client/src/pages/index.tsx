@@ -82,7 +82,7 @@ export default function Home() {
 
       <div className="bg-greyAccent p-10">
 
-        {retrievedData.length == 0 ? <div className="text-center text-2xl text-accent">No orders to display</div> :
+        {retrievedData.length == 0 ? <div>No orders to display...</div> :
           <div id="output" className="divide-dashed divide-y-2 divide-accent">
             {retrievedData.map((data) => 
             <CustomerOrders
